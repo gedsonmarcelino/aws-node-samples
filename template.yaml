@@ -1,0 +1,127 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cloud-formation-test
+
+  Sample SAM Template for cloud-formation-test
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  UserApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      DefinitionBody:
+        openapi: "3.0.1"
+        info:
+          version: "1.0"
+          title: "Dev-UserApi"
+        paths:
+          "/users":
+            get:
+              responses:
+                "200":
+                  description: "200 response"
+            post:
+              responses:
+                "200":
+                  description: "200 response"
+          "/users/{id}":
+            get:
+              responses:
+                "200":
+                  description: "200 response"
+            put:
+              responses:
+                "200":
+                  description: "200 response"
+            delete:
+              responses:
+                "200":
+                  description: "200 response"
+
+  UserCreateFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: functions/
+      Handler: app.create
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        UserCreate:
+          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /users
+            Method: post
+            ApiId: !Ref UserApi
+
+  UserReadFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: functions/
+      Handler: app.read
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        UserRead:
+          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /users
+            Method: get
+            ApiId: !Ref UserApi
+
+  UserDeleteFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: functions/
+      Handler: app.delete
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        UserRead:
+          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /users/{id}
+            Method: delete
+            ApiId: !Ref UserApi
+  UserUpdateFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: functions/
+      Handler: app.update
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        UserRead:
+          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /users/{id}
+            Method: put
+            ApiId: !Ref UserApi
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  # UserApi:
+  #   Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+  #   Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  UserCreateFunction:
+    Description: "User create Lambda Function ARN"
+    Value: !GetAtt UserCreateFunction.Arn
+  UserCreateFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt UserCreateFunctionRole.Arn
+  UserReadFunction:
+    Description: "User read Lambda Function ARN"
+    Value: !GetAtt UserReadFunction.Arn
+  UserReadFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt UserReadFunctionRole.Arn
