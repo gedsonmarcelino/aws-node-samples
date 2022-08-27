@@ -1,0 +1,7 @@
+{
+  "path": "/books",
+  "httpMethod": "GET",
+  "queryStringParameters": {
+    "page": ""
+  }
+}
