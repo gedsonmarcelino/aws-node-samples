@@ -1,6 +1,6 @@
-# aws-node-template
+# aws-node-samples
 
-AWS Lambda Templates using Node (javascript/typescript).
+AWS Lambda Samples using NodeJS.
 
 ## List of samples
 
