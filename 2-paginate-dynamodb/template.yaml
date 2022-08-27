@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  2-paginate-dynamodb
+
+  Sample SAM Template for 2-paginate-dynamodb
+
+Globals:
+  Function:
+    Timeout: 5
+
+Resources:
+  DdbBooksTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 3
+        WriteCapacityUnits: 3
+
+  PaginateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Architectures:
+        - x86_64
+      Events:
+        Paginate:
+          Type: Api
+          Properties:
+            Path: /books
+            Method: get
+
+Outputs:
+  PaginateApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  PaginateFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt PaginateFunction.Arn
+  PaginateFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt PaginateFunctionRole.Arn

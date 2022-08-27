@@ -1,8 +1,9 @@
 # aws-node-template
 
-AWS Lambda Template in Node.
+AWS Lambda Templates using Node (javascript/typescript).
 
-## Next steps
+## List of samples
 
-[] add eslint
-[] add unit tests
+- 1-crud-http-api
+- 2-paginate-dynamodb
+
